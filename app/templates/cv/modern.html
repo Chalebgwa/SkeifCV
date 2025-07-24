@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ cv.personal_info.full_name }} - CV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+        
+        .cv-container {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            min-height: 297mm;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            position: relative;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.3);
+            object-fit: cover;
+        }
+        
+        .header-text h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .contact-item i {
+            width: 16px;
+            text-align: center;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 40px;
+            padding: 40px;
+        }
+        
+        .left-column h2 {
+            color: #667eea;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 5px;
+        }
+        
+        .right-column h2 {
+            color: #667eea;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 5px;
+        }
+        
+        .summary {
+            margin-bottom: 30px;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+        
+        .experience-item, .education-item {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .experience-item:last-child, .education-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .item-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #2c3e50;
+        }
+        
+        .item-company {
+            font-weight: 500;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .item-location {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .item-date {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+        
+        .description ul {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        
+        .description li {
+            margin-bottom: 5px;
+        }
+        
+        .skills-grid {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .skill-category {
+            margin-bottom: 20px;
+        }
+        
+        .skill-category h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .skill-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .skill-name {
+            font-weight: 500;
+        }
+        
+        .skill-level {
+            font-size: 0.8rem;
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .cv-container {
+                box-shadow: none;
+                max-width: none;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cv-container">
+        <header class="header">
+            <div class="header-content">
+                {% if cv.personal_info.profile_image %}
+                <img src="{{ cv.personal_info.profile_image }}" alt="Profile" class="profile-image">
+                {% endif %}
+                <div class="header-text">
+                    <h1>{{ cv.personal_info.full_name }}</h1>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i>📧</i>
+                            <span>{{ cv.personal_info.email }}</span>
+                        </div>
+                        <div class="contact-item">
+                            <i>📱</i>
+                            <span>{{ cv.personal_info.phone }}</span>
+                        </div>
+                        <div class="contact-item">
+                            <i>📍</i>
+                            <span>{{ cv.personal_info.location }}</span>
+                        </div>
+                        {% if cv.personal_info.website %}
+                        <div class="contact-item">
+                            <i>🌐</i>
+                            <span>{{ cv.personal_info.website }}</span>
+                        </div>
+                        {% endif %}
+                        {% if cv.personal_info.linkedin %}
+                        <div class="contact-item">
+                            <i>💼</i>
+                            <span>LinkedIn</span>
+                        </div>
+                        {% endif %}
+                        {% if cv.personal_info.github %}
+                        <div class="contact-item">
+                            <i>💻</i>
+                            <span>GitHub</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="left-column">
+                {% if cv.personal_info.summary %}
+                <section class="summary">
+                    <h2>Professional Summary</h2>
+                    <p>{{ cv.personal_info.summary }}</p>
+                </section>
+                {% endif %}
+
+                {% if cv.work_experience %}
+                <section class="experience">
+                    <h2>Work Experience</h2>
+                    {% for exp in cv.work_experience %}
+                    <div class="experience-item">
+                        <div class="item-header">
+                            <div>
+                                <div class="item-title">{{ exp.job_title }}</div>
+                                <div class="item-company">{{ exp.company }}</div>
+                                <div class="item-location">{{ exp.location }}</div>
+                            </div>
+                            <div class="item-date">
+                                {{ exp.start_date.strftime('%b %Y') }} - 
+                                {% if exp.current %}
+                                    Present
+                                {% elif exp.end_date %}
+                                    {{ exp.end_date.strftime('%b %Y') }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if exp.description %}
+                        <div class="description">
+                            <ul>
+                                {% for desc in exp.description %}
+                                <li>{{ desc }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </section>
+                {% endif %}
+
+                {% if cv.education %}
+                <section class="education">
+                    <h2>Education</h2>
+                    {% for edu in cv.education %}
+                    <div class="education-item">
+                        <div class="item-header">
+                            <div>
+                                <div class="item-title">{{ edu.degree }}</div>
+                                <div class="item-company">{{ edu.institution }}</div>
+                                <div class="item-location">{{ edu.location }}</div>
+                                {% if edu.gpa %}
+                                <div class="item-location">GPA: {{ edu.gpa }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="item-date">
+                                {{ edu.start_date.strftime('%b %Y') }} - 
+                                {% if edu.current %}
+                                    Present
+                                {% elif edu.end_date %}
+                                    {{ edu.end_date.strftime('%b %Y') }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </section>
+                {% endif %}
+            </div>
+
+            <div class="right-column">
+                {% if cv.skills %}
+                <section class="skills">
+                    <h2>Skills</h2>
+                    <div class="skills-grid">
+                        {% set categories = cv.skills | groupby('category') %}
+                        {% for category, skills in categories %}
+                            {% if category %}
+                            <div class="skill-category">
+                                <h4>{{ category }}</h4>
+                                {% for skill in skills %}
+                                <div class="skill-item">
+                                    <span class="skill-name">{{ skill.name }}</span>
+                                    {% if skill.level %}
+                                    <span class="skill-level">{{ skill.level }}</span>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="skill-category">
+                                {% for skill in skills %}
+                                <div class="skill-item">
+                                    <span class="skill-name">{{ skill.name }}</span>
+                                    {% if skill.level %}
+                                    <span class="skill-level">{{ skill.level }}</span>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

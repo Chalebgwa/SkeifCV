@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}SkeifCV - Free CV Generator{% endblock %}
+
+{% block content %}
+<div class="hero-section bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Create Your Perfect CV</h1>
+                <p class="lead mb-4">Choose from modern templates, add your data, and generate a professional CV in minutes.</p>
+                <a href="#templates" class="btn btn-light btn-lg">Get Started <i class="fas fa-arrow-down ms-2"></i></a>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <i class="fas fa-file-pdf display-1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5" id="templates">
+    <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold">Choose Your Template</h2>
+        <p class="lead text-muted">Select from our collection of modern, professional CV templates</p>
+    </div>
+
+    <div class="row g-4">
+        {% for template in templates %}
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm template-card">
+                <div class="card-img-top-wrapper">
+                    <img src="{{ template.preview_image }}" class="card-img-top" alt="{{ template.display_name }} template">
+                    <div class="overlay">
+                        <a href="/preview/{{ template.name }}" class="btn btn-outline-light btn-sm me-2" target="_blank">
+                            <i class="fas fa-eye me-1"></i>Preview
+                        </a>
+                        <a href="/editor/{{ template.name }}" class="btn btn-light btn-sm">
+                            <i class="fas fa-edit me-1"></i>Use Template
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ template.display_name }}</h5>
+                    <p class="card-text text-muted">{{ template.description }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 text-center mb-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-palette fa-3x text-primary"></i>
+                </div>
+                <h4>Modern Templates</h4>
+                <p class="text-muted">Choose from professionally designed templates that stand out to employers.</p>
+            </div>
+            <div class="col-lg-4 text-center mb-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-edit fa-3x text-primary"></i>
+                </div>
+                <h4>Easy Editing</h4>
+                <p class="text-muted">Simple form-based interface to add your information and customize your CV.</p>
+            </div>
+            <div class="col-lg-4 text-center mb-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-download fa-3x text-primary"></i>
+                </div>
+                <h4>PDF Export</h4>
+                <p class="text-muted">Download your CV as a high-quality PDF ready for printing or digital sharing.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .template-card {
+        border: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .template-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+    }
+    
+    .card-img-top-wrapper {
+        position: relative;
+        overflow: hidden;
+        height: 250px;
+    }
+    
+    .card-img-top {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .template-card:hover .overlay {
+        opacity: 1;
+    }
+    
+    .template-card:hover .card-img-top {
+        transform: scale(1.1);
+    }
+</style>
+{% endblock %}
