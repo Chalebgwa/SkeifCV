@@ -82,17 +82,31 @@ async def generate_cv(request: Request):
         # Parse form data into CV model
         cv_data = await parse_form_data(form_data)
         
+        # Debug: Print parsed data
+        print(f"Parsed CV data: {cv_data.personal_info.full_name}")
+        
         # Generate PDF
         pdf_path = await pdf_generator.generate_cv(cv_data)
         
-        # Return the PDF file
-        return FileResponse(
-            pdf_path,
-            media_type="application/pdf",
-            filename=f"{cv_data.personal_info.full_name.replace(' ', '_')}_CV.pdf"
-        )
+        # Return the file
+        if pdf_path.endswith('.pdf'):
+            return FileResponse(
+                pdf_path,
+                media_type="application/pdf",
+                filename=f"{cv_data.personal_info.full_name.replace(' ', '_')}_CV.pdf"
+            )
+        else:
+            # Return HTML file as fallback
+            return FileResponse(
+                pdf_path,
+                media_type="text/html",
+                filename=f"{cv_data.personal_info.full_name.replace(' ', '_')}_CV.html"
+            )
     
     except Exception as e:
+        print(f"Error in generate_cv: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=400, detail=str(e))
 
 
@@ -130,32 +144,60 @@ async def parse_form_data(form_data) -> CVData:
     work_experience = []
     exp_count = int(form_data.get("work_experience_count", 0))
     for i in range(exp_count):
-        exp = WorkExperience(
-            job_title=form_data.get(f"work_title_{i}", ""),
-            company=form_data.get(f"work_company_{i}", ""),
-            location=form_data.get(f"work_location_{i}", ""),
-            start_date=datetime.strptime(form_data.get(f"work_start_{i}", ""), "%Y-%m").date(),
-            end_date=datetime.strptime(form_data.get(f"work_end_{i}", ""), "%Y-%m").date() if form_data.get(f"work_end_{i}") else None,
-            current=form_data.get(f"work_current_{i}", "") == "on",
-            description=form_data.get(f"work_description_{i}", "").split("\n")
-        )
-        work_experience.append(exp)
+        start_date_str = form_data.get(f"work_start_{i}", "")
+        end_date_str = form_data.get(f"work_end_{i}", "")
+        current = form_data.get(f"work_current_{i}", "") == "on"
+        
+        if start_date_str:
+            try:
+                start_date = datetime.strptime(start_date_str, "%Y-%m").date()
+                end_date = None
+                if end_date_str and not current:
+                    end_date = datetime.strptime(end_date_str, "%Y-%m").date()
+                
+                exp = WorkExperience(
+                    job_title=form_data.get(f"work_title_{i}", ""),
+                    company=form_data.get(f"work_company_{i}", ""),
+                    location=form_data.get(f"work_location_{i}", ""),
+                    start_date=start_date,
+                    end_date=end_date,
+                    current=current,
+                    description=form_data.get(f"work_description_{i}", "").split("\n") if form_data.get(f"work_description_{i}") else []
+                )
+                work_experience.append(exp)
+            except ValueError as e:
+                print(f"Error parsing work experience {i}: {e}")
+                continue
     
     # Education
     education = []
     edu_count = int(form_data.get("education_count", 0))
     for i in range(edu_count):
-        edu = Education(
-            degree=form_data.get(f"edu_degree_{i}", ""),
-            institution=form_data.get(f"edu_institution_{i}", ""),
-            location=form_data.get(f"edu_location_{i}", ""),
-            start_date=datetime.strptime(form_data.get(f"edu_start_{i}", ""), "%Y-%m").date(),
-            end_date=datetime.strptime(form_data.get(f"edu_end_{i}", ""), "%Y-%m").date() if form_data.get(f"edu_end_{i}") else None,
-            current=form_data.get(f"edu_current_{i}", "") == "on",
-            gpa=form_data.get(f"edu_gpa_{i}"),
-            description=form_data.get(f"edu_description_{i}", "").split("\n") if form_data.get(f"edu_description_{i}") else None
-        )
-        education.append(edu)
+        start_date_str = form_data.get(f"edu_start_{i}", "")
+        end_date_str = form_data.get(f"edu_end_{i}", "")
+        current = form_data.get(f"edu_current_{i}", "") == "on"
+        
+        if start_date_str:
+            try:
+                start_date = datetime.strptime(start_date_str, "%Y-%m").date()
+                end_date = None
+                if end_date_str and not current:
+                    end_date = datetime.strptime(end_date_str, "%Y-%m").date()
+                
+                edu = Education(
+                    degree=form_data.get(f"edu_degree_{i}", ""),
+                    institution=form_data.get(f"edu_institution_{i}", ""),
+                    location=form_data.get(f"edu_location_{i}", ""),
+                    start_date=start_date,
+                    end_date=end_date,
+                    current=current,
+                    gpa=form_data.get(f"edu_gpa_{i}"),
+                    description=form_data.get(f"edu_description_{i}", "").split("\n") if form_data.get(f"edu_description_{i}") else None
+                )
+                education.append(edu)
+            except ValueError as e:
+                print(f"Error parsing education {i}: {e}")
+                continue
     
     # Skills
     skills = []

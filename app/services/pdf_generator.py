@@ -20,19 +20,34 @@ class PDFGenerator:
     
     async def generate_cv(self, cv_data: CVData) -> str:
         """Generate PDF from CV data"""
-        # Generate HTML from template
-        html_content = await self.generate_html(cv_data)
-        
-        # Create PDF
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        pdf_filename = f"cv_{timestamp}.pdf"
-        pdf_path = self.output_dir / pdf_filename
-        
-        # Convert HTML to PDF
-        html_doc = HTML(string=html_content, base_url=str(Path.cwd()))
-        html_doc.write_pdf(str(pdf_path))
-        
-        return str(pdf_path)
+        try:
+            # Generate HTML from template
+            html_content = await self.generate_html(cv_data)
+            
+            # Create PDF
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            pdf_filename = f"cv_{timestamp}.pdf"
+            pdf_path = self.output_dir / pdf_filename
+            
+            # Try to convert HTML to PDF
+            try:
+                html_doc = HTML(string=html_content)
+                html_doc.write_pdf(str(pdf_path))
+                return str(pdf_path)
+            except Exception as pdf_error:
+                print(f"PDF generation failed: {pdf_error}")
+                # Fallback: save as HTML file for now
+                html_filename = f"cv_{timestamp}.html"
+                html_path = self.output_dir / html_filename
+                with open(html_path, 'w', encoding='utf-8') as f:
+                    f.write(html_content)
+                return str(html_path)
+                
+        except Exception as e:
+            print(f"Error in generate_cv: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            raise
     
     async def generate_html(self, cv_data: CVData) -> str:
         """Generate HTML from CV data and template"""
