@@ -1,49 +1,61 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Virtual environments
-venv/
-env/
-ENV/
-.venv/
-.env/
-
-# IDE
-.vscode/
-.idea/
+# Miscellaneous
+*.class
+*.log
+*.pyc
 *.swp
-*.swo
-*~
-
-# OS
 .DS_Store
-Thumbs.db
+.atom/
+.buildlog/
+.history
+.svn/
 
-# Application specific
-uploads/
-generated_cvs/
-*.pdf
+# IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+.idea/
 
-# Environment variables
-.env
+# Flutter
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Android
+/android/app/src/main/assets/flutter_assets/
+/android/app/src/main/jniLibs/
+/android/app/build/
+/android/build/
+/android/.gradle/
+/android/ephemeral/
+/android/local.properties
+/android/.idea/
+
+# iOS
+/ios/Flutter/App.framework
+/ios/Flutter/engine
+/ios/Flutter/flutter_assets/
+/ios/Flutter/Generated.xcconfig
+/ios/Runner/GeneratedPluginRegistrant.*
+/ios/Runner.xcodeproj/project.xcworkspace/
+/ios/Runner.xcodeproj/xcuserdata/
+/ios/Pods/
+/ios/Podfile.lock
+/ios/.symlinks/
+/ios/build/
+/ios/.idea/
+
+# macOS
+/macos/Flutter/ephemeral
+/macos/Pods/
+/macos/Podfile.lock
+/macos/.symlinks/
+
+# Linux
+/linux/flutter/ephemeral
+
+# Windows
+/windows/flutter/ephemeral
