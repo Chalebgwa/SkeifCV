@@ -46,6 +46,13 @@
       ]
     },
     {
+      "name": "animations",
+      "version": "2.1.0",
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
       "name": "printing",
       "version": "5.14.2",
       "dependencies": [
@@ -485,13 +492,6 @@
       "name": "vm_service",
       "version": "15.0.2",
       "dependencies": []
-    },
-    {
-      "name": "animations",
-      "version": "2.1.0",
-      "dependencies": [
-        "flutter"
-      ]
     }
   ],
   "configVersion": 1
