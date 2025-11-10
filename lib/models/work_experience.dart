@@ -10,4 +10,6 @@ class WorkExperience {
     this.dates = '',
     this.description = '',
   });
+
+  
 }
