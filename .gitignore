@@ -1,61 +1,24 @@
-# Miscellaneous
-*.class
+# Logs
+logs
 *.log
-*.pyc
-*.swp
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-.atom/
-.buildlog/
-.history
-.svn/
-
-# IntelliJ
-.idea/
-*.iml
-*.ipr
-*.iws
-.idea/
-
-# Flutter
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-.pub-cache/
-.pub/
-/build/
-
-# Android
-/android/app/src/main/assets/flutter_assets/
-/android/app/src/main/jniLibs/
-/android/app/build/
-/android/build/
-/android/.gradle/
-/android/ephemeral/
-/android/local.properties
-/android/.idea/
-
-# iOS
-/ios/Flutter/App.framework
-/ios/Flutter/engine
-/ios/Flutter/flutter_assets/
-/ios/Flutter/Generated.xcconfig
-/ios/Runner/GeneratedPluginRegistrant.*
-/ios/Runner.xcodeproj/project.xcworkspace/
-/ios/Runner.xcodeproj/xcuserdata/
-/ios/Pods/
-/ios/Podfile.lock
-/ios/.symlinks/
-/ios/build/
-/ios/.idea/
-
-# macOS
-/macos/Flutter/ephemeral
-/macos/Pods/
-/macos/Podfile.lock
-/macos/.symlinks/
-
-# Linux
-/linux/flutter/ephemeral
-
-# Windows
-/windows/flutter/ephemeral
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
