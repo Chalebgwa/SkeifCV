@@ -1,8 +1,10 @@
 import 'package:cv_generator/providers/cv_form_provider.dart';
 import 'package:cv_generator/screens/pdf_preview_screen.dart';
 import 'package:cv_generator/services/pdf_generator.dart';
+import 'package:cv_generator/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:animations/animations.dart';
 
 class CvFormScreen extends StatefulWidget {
   const CvFormScreen({super.key});
@@ -21,66 +23,71 @@ class _CvFormScreenState extends State<CvFormScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create CV'),
+        title: Text('Create CV', style: AppTextStyles.title),
+        backgroundColor: AppColors.background,
         elevation: 0,
       ),
       body: Form(
         key: _formKey,
-        child: Stepper(
-          type: StepperType.horizontal,
-          currentStep: _currentStep,
-          onStepContinue: () {
-            if (_currentStep < 4) {
-              setState(() {
-                _currentStep += 1;
-              });
-            } else {
+        child: PageTransitionSwitcher(
+          transitionBuilder: (
+            Widget child,
+            Animation<double> primaryAnimation,
+            Animation<double> secondaryAnimation,
+          ) {
+            return FadeThroughTransition(
+              animation: primaryAnimation,
+              secondaryAnimation: secondaryAnimation,
+              child: child,
+            );
+          },
+          child: Stepper(
+            key: ValueKey<int>(_currentStep),
+            type: StepperType.horizontal,
+            currentStep: _currentStep,
+            onStepContinue: () {
+              final isLastStep = _currentStep == 4;
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
-                _generatePdf(provider);
+                if (isLastStep) {
+                  _generatePdf(provider);
+                } else {
+                  setState(() {
+                    _currentStep += 1;
+                  });
+                }
               }
-            }
-          },
-          onStepCancel: () {
-            if (_currentStep > 0) {
-              setState(() {
-                _currentStep -= 1;
-              });
-            }
-          },
-          steps: [
-            Step(
-              title: const Text('Personal'),
-              content: _buildPersonalDetailsForm(provider),
-              isActive: _currentStep >= 0,
-            ),
-            Step(
-              title: const Text('Experience'),
-              content: Column(
-                children: _buildWorkExperienceFields(provider),
-              ),
-              isActive: _currentStep >= 1,
-            ),
-            Step(
-              title: const Text('Education'),
-              content: Column(
-                children: _buildEducationFields(provider),
-              ),
-              isActive: _currentStep >= 2,
-            ),
-            Step(
-              title: const Text('Skills'),
-              content: Column(
-                children: _buildSkillsFields(provider),
-              ),
-              isActive: _currentStep >= 3,
-            ),
-            Step(
-              title: const Text('Review'),
-              content: _buildReviewSection(provider),
-              isActive: _currentStep >= 4,
-            ),
-          ],
+            },
+            onStepCancel: () {
+              if (_currentStep > 0) {
+                setState(() {
+                  _currentStep -= 1;
+                });
+              }
+            },
+            steps: _buildSteps(provider),
+            controlsBuilder: (BuildContext context, ControlsDetails details) {
+              final isLastStep = _currentStep == 4;
+              return Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (_currentStep > 0)
+                      TextButton(
+                        onPressed: details.onStepCancel,
+                        child: const Text('Back'),
+                      ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: details.onStepContinue,
+                      child: Text(isLastStep ? 'Finish & Export' : 'Next'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -94,6 +101,42 @@ class _CvFormScreenState extends State<CvFormScreen> {
         builder: (context) => PdfPreviewScreen(pdfData: pdfData),
       ),
     );
+  }
+
+  List<Step> _buildSteps(CvFormProvider provider) {
+    return [
+      Step(
+        title: const Text('Personal'),
+        content: _buildPersonalDetailsForm(provider),
+        isActive: _currentStep >= 0,
+      ),
+      Step(
+        title: const Text('Experience'),
+        content: Column(
+          children: _buildWorkExperienceFields(provider),
+        ),
+        isActive: _currentStep >= 1,
+      ),
+      Step(
+        title: const Text('Education'),
+        content: Column(
+          children: _buildEducationFields(provider),
+        ),
+        isActive: _currentStep >= 2,
+      ),
+      Step(
+        title: const Text('Skills'),
+        content: Column(
+          children: _buildSkillsFields(provider),
+        ),
+        isActive: _currentStep >= 3,
+      ),
+      Step(
+        title: const Text('Review'),
+        content: _buildReviewSection(provider),
+        isActive: _currentStep >= 4,
+      ),
+    ];
   }
 
   Widget _buildPersonalDetailsForm(CvFormProvider provider) {
@@ -140,7 +183,7 @@ class _CvFormScreenState extends State<CvFormScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Work Experience #${index + 1}', style: Theme.of(context).textTheme.titleMedium),
+                  Text('Work Experience #${index + 1}', style: AppTextStyles.subtitle),
                   const SizedBox(height: 8),
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Job Title'),
@@ -177,9 +220,8 @@ class _CvFormScreenState extends State<CvFormScreen> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: IconButton(
-                      icon: const Icon(Icons.delete_outline),
+                      icon: Icon(Icons.delete_outline, color: AppColors.error),
                       onPressed: () => provider.removeWorkExperience(index),
-                      color: Colors.redAccent,
                     ),
                   ),
                 ],
@@ -213,7 +255,7 @@ class _CvFormScreenState extends State<CvFormScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Education #${index + 1}', style: Theme.of(context).textTheme.titleMedium),
+                  Text('Education #${index + 1}', style: AppTextStyles.subtitle),
                   const SizedBox(height: 8),
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Institution'),
@@ -248,9 +290,8 @@ class _CvFormScreenState extends State<CvFormScreen> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: IconButton(
-                      icon: const Icon(Icons.delete_outline),
+                      icon: Icon(Icons.delete_outline, color: AppColors.error),
                       onPressed: () => provider.removeEducation(index),
-                      color: Colors.redAccent,
                     ),
                   ),
                 ],
@@ -290,9 +331,8 @@ class _CvFormScreenState extends State<CvFormScreen> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete_outline),
+                  icon: Icon(Icons.delete_outline, color: AppColors.error),
                   onPressed: () => provider.removeSkill(index),
-                  color: Colors.redAccent,
                 ),
               ],
             ),
@@ -311,53 +351,67 @@ class _CvFormScreenState extends State<CvFormScreen> {
   }
 
   Widget _buildReviewSection(CvFormProvider provider) {
-    // Save the form before showing the review
-    _formKey.currentState!.save();
+    _formKey.currentState?.save();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildReviewTile('Full Name', provider.cvData.fullName),
-        _buildReviewTile('Email', provider.cvData.email),
-        _buildReviewTile('Phone Number', provider.cvData.phoneNumber),
+        Text('Personal Details', style: AppTextStyles.title),
+        const SizedBox(height: 8),
+        Card(
+          child: Column(
+            children: [
+              _buildReviewTile(Icons.person, 'Full Name', provider.cvData.fullName),
+              _buildReviewTile(Icons.email, 'Email', provider.cvData.email),
+              _buildReviewTile(Icons.phone, 'Phone Number', provider.cvData.phoneNumber),
+            ],
+          ),
+        ),
         const Divider(height: 32, thickness: 1),
-        Text('Work Experience', style: Theme.of(context).textTheme.titleLarge),
+        Text('Work Experience', style: AppTextStyles.title),
         ...provider.cvData.workExperience.map((e) => Card(
           margin: const EdgeInsets.only(top: 8),
           child: ListTile(
-            title: Text(e.jobTitle),
-            subtitle: Text('${e.company}\n${e.dates}'),
+            leading: Icon(Icons.work, color: AppColors.primary),
+            title: Text(e.jobTitle, style: AppTextStyles.subtitle),
+            subtitle: Text('${e.company}\n${e.dates}', style: AppTextStyles.body),
             isThreeLine: true,
           ),
         )),
         const Divider(height: 32, thickness: 1),
-        Text('Education', style: Theme.of(context).textTheme.titleLarge),
+        Text('Education', style: AppTextStyles.title),
         ...provider.cvData.education.map((e) => Card(
           margin: const EdgeInsets.only(top: 8),
           child: ListTile(
-            title: Text(e.degree),
-            subtitle: Text('${e.institution}\n${e.dates}'),
+            leading: Icon(Icons.school, color: AppColors.primary),
+            title: Text(e.degree, style: AppTextStyles.subtitle),
+            subtitle: Text('${e.institution}\n${e.dates}', style: AppTextStyles.body),
             isThreeLine: true,
           ),
         )),
         const Divider(height: 32, thickness: 1),
-        Text('Skills', style: Theme.of(context).textTheme.titleLarge),
+        Text('Skills', style: AppTextStyles.title),
+        const SizedBox(height: 8),
         Wrap(
           spacing: 8.0,
           runSpacing: 4.0,
           children: provider.cvData.skills
-              .map((skill) => Chip(label: Text(skill)))
+              .map((skill) => Chip(
+                    label: Text(skill),
+                    backgroundColor: AppColors.primaryLight.withOpacity(0.5),
+                    labelStyle: TextStyle(color: AppColors.primaryDark),
+                  ))
               .toList(),
         ),
       ],
     );
   }
 
-  Widget _buildReviewTile(String title, String subtitle) {
+  Widget _buildReviewTile(IconData icon, String title, String subtitle) {
     return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(subtitle),
+      leading: Icon(icon, color: AppColors.primary),
+      title: Text(title, style: AppTextStyles.subtitle),
+      subtitle: Text(subtitle, style: AppTextStyles.body),
     );
   }
 }
