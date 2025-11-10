@@ -21,5 +21,5 @@ class WorkExperience {
 
     };
 
-    
+  }
 }
