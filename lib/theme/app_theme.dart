@@ -41,7 +41,7 @@ class AppTheme {
       ),
       labelStyle: TextStyle(color: AppColors.darkGrey),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeD(
       elevation: 4,
       shadowColor: Colors.grey.withOpacity(0.2),
       shape: RoundedRectangleBorder(
