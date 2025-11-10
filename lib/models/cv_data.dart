@@ -35,8 +35,10 @@ class CvData {
       phone: json['phone'] ?? '',
       // Use nullable casts to avoid dead null-aware expressions and keep parsed entries as maps/dynamics.
       workExperience:
-          (json['workExperience'] as List<dynamic>?)?.map((e) => e).toList() ?? [],
-      education: (json['education'] as List<dynamic>?)?.map((e) => e).toList() ?? [],
+          (json['workExperience'] as List<dynamic>?)?.map((e) => e).toList() ??
+          [],
+      education:
+          (json['education'] as List<dynamic>?)?.map((e) => e).toList() ?? [],
       skills: (json['skills'] as List<dynamic>?)?.cast<String>() ?? [],
     );
   }
