@@ -16,7 +16,7 @@ class PdfGenerator {
               pw.Text(data.fullName, style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(height: 10),
               pw.Text(data.email),
-              pw.Text(data.phone),
+              pw.Text(data.phoneNumber),
               pw.SizedBox(height: 20),
               pw.Text('Work Experience', style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(height: 10),
