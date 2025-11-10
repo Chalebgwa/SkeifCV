@@ -19,7 +19,7 @@ class CvFormProvider extends ChangeNotifier {
   }
 
   void updatePhone(String phone) {
-    _cvData.phone = phone;
+    _cvData.phoneNumber = phone;
     notifyListeners();
   }
 
@@ -65,6 +65,11 @@ class CvFormProvider extends ChangeNotifier {
 
   void updateSkill(int index, String value) {
     _cvData.skills[index] = value;
+    notifyListeners();
+  }
+
+  void updateSelectedTheme(String themeId) {
+    _cvData.selectedThemeId = themeId;
     notifyListeners();
   }
 }
