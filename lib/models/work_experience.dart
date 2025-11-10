@@ -11,15 +11,38 @@ class WorkExperience {
     this.description = '',
   });
 
-  // toJson method to convert WorkExperience to a Map
   Map<String, dynamic> toJson() {
     return {
       'jobTitle': jobTitle,
       'company': company,
       'dates': dates,
       'description': description,
-
     };
+  }
 
+  factory WorkExperience.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return WorkExperience();
+    }
+    return WorkExperience(
+      jobTitle: json['jobTitle'] ?? '',
+      company: json['company'] ?? '',
+      dates: json['dates'] ?? '',
+      description: json['description'] ?? '',
+    );
+  }
+
+  WorkExperience copyWith({
+    String? jobTitle,
+    String? company,
+    String? dates,
+    String? description,
+  }) {
+    return WorkExperience(
+      jobTitle: jobTitle ?? this.jobTitle,
+      company: company ?? this.company,
+      dates: dates ?? this.dates,
+      description: description ?? this.description,
+    );
   }
 }
