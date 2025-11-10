@@ -58,14 +58,16 @@ class CvData {
       fullName: fullName ?? this.fullName,
       email: email ?? this.email,
       phone: phone ?? this.phone,
-      workExperience: workExperience ?? List<WorkExperience>.from(this.workExperience),
+      workExperience:
+          workExperience ?? List<WorkExperience>.from(this.workExperience),
       education: education ?? List<Education>.from(this.education),
       skills: skills ?? List<String>.from(this.skills),
     );
   }
 
   @override
-  String toString() => 'CvData(fullName: $fullName, email: $email, phone: $phone, workExperience: ${workExperience.length}, education: ${education.length}, skills: ${skills.length})';
+  String toString() =>
+      'CvData(fullName: $fullName, email: $email, phone: $phone, workExperience: ${workExperience.length}, education: ${education.length}, skills: ${skills.length})';
 
   @override
   bool operator ==(Object other) {
