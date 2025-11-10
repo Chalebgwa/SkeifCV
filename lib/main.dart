@@ -1,5 +1,6 @@
 import 'package:cv_generator/providers/cv_form_provider.dart';
 import 'package:cv_generator/screens/home_screen.dart';
+import 'package:cv_generator/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,9 +17,7 @@ class MyApp extends StatelessWidget {
       create: (context) => CvFormProvider(),
       child: MaterialApp(
         title: 'CV Generator',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+        theme: AppTheme.lightTheme,
         home: const HomeScreen(),
       ),
     );
