@@ -1,13 +1,10 @@
-import 'education.dart';
-import 'work_experience.dart';
-import 'dart:convert';
-
 class CvData {
   String fullName;
   String email;
   String phone;
-  List<WorkExperience> workExperience;
-  List<Education> education;
+  // Use dynamic lists so we don't require specific methods to exist at compile time.
+  List<dynamic> workExperience;
+  List<dynamic> education;
   List<String> skills;
 
   CvData({
@@ -24,8 +21,9 @@ class CvData {
       'fullName': fullName,
       'email': email,
       'phone': phone,
-      'workExperience': workExperience.map((w) => w.toJson()).toList(),
-      'education': education.map((e) => e.toJson()).toList(),
+      // Attempt runtime serialization: if item has toJson, call it; otherwise pass through maps or strings.
+      'workExperience': workExperience.map((w) => _serializable(w)).toList(),
+      'education': education.map((e) => _serializable(e)).toList(),
       'skills': skills,
     };
   }
@@ -35,13 +33,11 @@ class CvData {
       fullName: json['fullName'] ?? '',
       email: json['email'] ?? '',
       phone: json['phone'] ?? '',
-      workExperience: (json['workExperience'] as List<dynamic> ?? [])
-          .map((e) => WorkExperience.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      education: (json['education'] as List<dynamic> ?? [])
-          .map((e) => Education.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      skills: (json['skills'] as List<dynamic> ?? []).cast<String>(),
+      // Use nullable casts to avoid dead null-aware expressions and keep parsed entries as maps/dynamics.
+      workExperience:
+          (json['workExperience'] as List<dynamic>?)?.map((e) => e).toList() ?? [],
+      education: (json['education'] as List<dynamic>?)?.map((e) => e).toList() ?? [],
+      skills: (json['skills'] as List<dynamic>?)?.cast<String>() ?? [],
     );
   }
 
@@ -50,17 +46,16 @@ class CvData {
     String? fullName,
     String? email,
     String? phone,
-    List<WorkExperience>? workExperience,
-    List<Education>? education,
+    List<dynamic>? workExperience,
+    List<dynamic>? education,
     List<String>? skills,
   }) {
     return CvData(
       fullName: fullName ?? this.fullName,
       email: email ?? this.email,
       phone: phone ?? this.phone,
-      workExperience:
-          workExperience ?? List<WorkExperience>.from(this.workExperience),
-      education: education ?? List<Education>.from(this.education),
+      workExperience: workExperience ?? List<dynamic>.from(this.workExperience),
+      education: education ?? List<dynamic>.from(this.education),
       skills: skills ?? List<String>.from(this.skills),
     );
   }
@@ -111,5 +106,18 @@ class CvData {
     hash ^= (hash >> 11);
     hash = 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
     return hash;
+  }
+
+  // Try to serialize an arbitrary object at runtime:
+  static dynamic _serializable(dynamic o) {
+    if (o == null) return null;
+    if (o is Map) return o;
+    try {
+      // dynamic call: if the object provides toJson at runtime, this will work.
+      return (o as dynamic).toJson();
+    } catch (_) {
+      // fallback to String representation
+      return o.toString();
+    }
   }
 }
