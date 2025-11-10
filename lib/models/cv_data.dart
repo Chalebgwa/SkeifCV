@@ -1,30 +1,36 @@
+import 'package:cv_generator/models/education.dart';
+import 'package:cv_generator/models/work_experience.dart';
+
 class CvData {
   String fullName;
   String email;
-  String phone;
-  // Use dynamic lists so we don't require specific methods to exist at compile time.
-  List<dynamic> workExperience;
-  List<dynamic> education;
+  String phoneNumber;
+  List<WorkExperience> workExperience;
+  List<Education> education;
   List<String> skills;
+  String selectedThemeId;
 
   CvData({
     this.fullName = '',
     this.email = '',
-    this.phone = '',
-    this.workExperience = const [],
-    this.education = const [],
-    this.skills = const [],
-  });
+    this.phoneNumber = '',
+    List<WorkExperience>? workExperience,
+    List<Education>? education,
+    List<String>? skills,
+    this.selectedThemeId = 'theme_1',
+  })  : workExperience = workExperience ?? <WorkExperience>[],
+        education = education ?? <Education>[],
+        skills = skills ?? <String>[];
 
   Map<String, dynamic> toJson() {
     return {
       'fullName': fullName,
       'email': email,
-      'phone': phone,
-      // Attempt runtime serialization: if item has toJson, call it; otherwise pass through maps or strings.
-      'workExperience': workExperience.map((w) => _serializable(w)).toList(),
-      'education': education.map((e) => _serializable(e)).toList(),
+      'phoneNumber': phoneNumber,
+      'workExperience': workExperience.map((w) => w.toJson()).toList(),
+      'education': education.map((e) => e.toJson()).toList(),
       'skills': skills,
+      'selectedThemeId': selectedThemeId,
     };
   }
 
@@ -32,39 +38,49 @@ class CvData {
     return CvData(
       fullName: json['fullName'] ?? '',
       email: json['email'] ?? '',
-      phone: json['phone'] ?? '',
-      // Use nullable casts to avoid dead null-aware expressions and keep parsed entries as maps/dynamics.
+      phoneNumber: json['phoneNumber'] ?? json['phone'] ?? '',
       workExperience:
-          (json['workExperience'] as List<dynamic>?)?.map((e) => e).toList() ??
-          [],
-      education:
-          (json['education'] as List<dynamic>?)?.map((e) => e).toList() ?? [],
-      skills: (json['skills'] as List<dynamic>?)?.cast<String>() ?? [],
+          (json['workExperience'] as List<dynamic>?)
+                  ?.map((e) => WorkExperience.fromJson(
+                      e as Map<String, dynamic>?))
+                  .toList() ??
+              <WorkExperience>[],
+      education: (json['education'] as List<dynamic>?)
+              ?.map((e) => Education.fromJson(e as Map<String, dynamic>?))
+              .toList() ??
+          <Education>[],
+      skills: (json['skills'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          <String>[],
+      selectedThemeId: json['selectedThemeId'] ?? 'theme_1',
     );
   }
 
-  // Convenient copyWith for immutable-style updates
   CvData copyWith({
     String? fullName,
     String? email,
-    String? phone,
-    List<dynamic>? workExperience,
-    List<dynamic>? education,
+    String? phoneNumber,
+    List<WorkExperience>? workExperience,
+    List<Education>? education,
     List<String>? skills,
+    String? selectedThemeId,
   }) {
     return CvData(
       fullName: fullName ?? this.fullName,
       email: email ?? this.email,
-      phone: phone ?? this.phone,
-      workExperience: workExperience ?? List<dynamic>.from(this.workExperience),
-      education: education ?? List<dynamic>.from(this.education),
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      workExperience:
+          workExperience ?? List<WorkExperience>.from(this.workExperience),
+      education: education ?? List<Education>.from(this.education),
       skills: skills ?? List<String>.from(this.skills),
+      selectedThemeId: selectedThemeId ?? this.selectedThemeId,
     );
   }
 
   @override
   String toString() =>
-      'CvData(fullName: $fullName, email: $email, phone: $phone, workExperience: ${workExperience.length}, education: ${education.length}, skills: ${skills.length})';
+      'CvData(fullName: $fullName, email: $email, phoneNumber: $phoneNumber, theme: $selectedThemeId, workExperience: ${workExperience.length}, education: ${education.length}, skills: ${skills.length})';
 
   @override
   bool operator ==(Object other) {
@@ -72,7 +88,8 @@ class CvData {
     if (other is! CvData) return false;
     return fullName == other.fullName &&
         email == other.email &&
-        phone == other.phone &&
+        phoneNumber == other.phoneNumber &&
+        selectedThemeId == other.selectedThemeId &&
         _listEquals(workExperience, other.workExperience) &&
         _listEquals(education, other.education) &&
         _listEquals(skills, other.skills);
@@ -82,12 +99,12 @@ class CvData {
   int get hashCode =>
       fullName.hashCode ^
       email.hashCode ^
-      phone.hashCode ^
+      phoneNumber.hashCode ^
+      selectedThemeId.hashCode ^
       _deepHash(workExperience) ^
       _deepHash(education) ^
       _deepHash(skills);
 
-  // Small helpers to avoid adding new dependencies
   bool _listEquals<T>(List<T> a, List<T> b) {
     if (identical(a, b)) return true;
     if (a.length != b.length) return false;
@@ -108,18 +125,5 @@ class CvData {
     hash ^= (hash >> 11);
     hash = 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
     return hash;
-  }
-
-  // Try to serialize an arbitrary object at runtime:
-  static dynamic _serializable(dynamic o) {
-    if (o == null) return null;
-    if (o is Map) return o;
-    try {
-      // dynamic call: if the object provides toJson at runtime, this will work.
-      return (o as dynamic).toJson();
-    } catch (_) {
-      // fallback to String representation
-      return o.toString();
-    }
   }
 }
