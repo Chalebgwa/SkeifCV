@@ -65,18 +65,10 @@ class CvTheme {
   }
 
   static Color _colorFromHex(String hex) {
-    final buffer = StringBuffer();
-    if (!hex.startsWith('#')) {
-      buffer.write('ff');
-    } else if (hex.length == 7) {
-      buffer.write('ff');
-      buffer.write(hex.substring(1));
-    } else if (hex.length == 9) {
-      return Color(int.parse(hex.replaceFirst('#', '0x')));
-    } else {
-      buffer.write('ff');
-      buffer.write(hex);
+    var cleaned = hex.toUpperCase().replaceAll('#', '');
+    if (cleaned.length == 6) {
+      cleaned = 'FF$cleaned';
     }
-    return Color(int.parse(buffer.toString(), radix: 16));
+    return Color(int.parse(cleaned, radix: 16));
   }
 }
