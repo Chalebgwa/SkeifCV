@@ -11,5 +11,15 @@ class WorkExperience {
     this.description = '',
   });
 
-  // to
+  // toJson method to convert WorkExperience to a Map
+  Map<String, dynamic> toJson() {
+    return {
+      'jobTitle': jobTitle,
+      'company': company,
+      'dates': dates,
+      'description': description,
+
+    };
+
+    
 }
