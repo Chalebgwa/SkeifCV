@@ -1,4 +1,4 @@
-import 'package:cv_generator/screens/cv_form_screen.dart';
+import 'package:cv_generator/screens/cv_builder_screen.dart';
 import 'package:cv_generator/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CvFormScreen(),
+                    builder: (context) => const CvBuilderScreen(),
                   ),
                 );
               },
@@ -69,7 +69,7 @@ class HomeScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const CvFormScreen(),
+              builder: (context) => const CvBuilderScreen(),
             ),
           );
         },
