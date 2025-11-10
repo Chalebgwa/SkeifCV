@@ -41,7 +41,7 @@ class AppTheme {
       ),
       labelStyle: TextStyle(color: AppColors.darkGrey),
     ),
-    cardTheme: CardThemeData(
+    cardTheme: CardTheme(
       elevation: 4,
       shadowColor: Colors.grey.withOpacity(0.2),
       shape: RoundedRectangleBorder(
@@ -76,24 +76,8 @@ class AppTheme {
         ),
       ),
     ),
-    stepperTheme: StepperThemeData(
-      backgroundColor: AppColors.background,
-      elevation: 0,
-      connectorColor: MaterialStateProperty.resolveWith<Color>(
-          (Set<MaterialState> states) {
-        if (states.contains(MaterialState.selected)) {
-          return AppColors.primary;
-        }
-        return AppColors.grey;
-      }),
-      stepIconTheme: MaterialStateProperty.resolveWith<IconThemeData>(
-          (Set<MaterialState> states) {
-        if (states.contains(MaterialState.selected)) {
-          return IconThemeData(color: AppColors.primary, size: 24);
-        }
-        return IconThemeData(color: AppColors.grey, size: 24);
-      }),
-    ),
+
+    // stepperTheme removed for compatibility with current SDK
   );
 }
 
