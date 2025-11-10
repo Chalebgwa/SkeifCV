@@ -7,6 +7,7 @@
       "name": "cv_generator",
       "version": "1.0.0+1",
       "dependencies": [
+        "animations",
         "cupertino_icons",
         "flutter",
         "path_provider",
@@ -484,6 +485,13 @@
       "name": "vm_service",
       "version": "15.0.2",
       "dependencies": []
+    },
+    {
+      "name": "animations",
+      "version": "2.1.0",
+      "dependencies": [
+        "flutter"
+      ]
     }
   ],
   "configVersion": 1
